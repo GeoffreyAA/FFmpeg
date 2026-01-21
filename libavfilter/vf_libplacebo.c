@@ -219,7 +219,6 @@ typedef struct LibplaceboContext {
     int color_range;
     int color_primaries;
     int color_trc;
-    int chroma_location;
     int rotation;
     int alpha_mode;
     AVDictionary *extra_opts;
@@ -1024,7 +1023,6 @@ static int output_frame(AVFilterContext *ctx, int64_t pts)
     out->height = outlink->h;
     out->colorspace = outlink->colorspace;
     out->color_range = outlink->color_range;
-    out->chroma_location = outlink->chroma_location;
     out->alpha_mode = outlink->alpha_mode;
     if (s->deinterlace)
         out->flags &= ~(AV_FRAME_FLAG_INTERLACED | AV_FRAME_FLAG_TOP_FIELD_FIRST);
@@ -1697,17 +1695,6 @@ static const AVOption libplacebo_options[] = {
     {"arib-std-b67",                   NULL,  0, AV_OPT_TYPE_CONST, {.i64=AVCOL_TRC_ARIB_STD_B67}, INT_MIN, INT_MAX, STATIC, .unit = "color_trc"},
     {"vlog",                           NULL,  0, AV_OPT_TYPE_CONST, {.i64=AVCOL_TRC_V_LOG},        INT_MIN, INT_MAX, STATIC, .unit = "color_trc"},
 
-    {"chroma_location", "select chroma location", OFFSET(chroma_location), AV_OPT_TYPE_INT, {.i64=-1}, -1, AVCHROMA_LOC_NB-1, DYNAMIC, .unit = "chroma_location"},
-    {"auto",  "keep the same chroma location",  0, AV_OPT_TYPE_CONST, {.i64=-1},                        0, 0, STATIC, .unit = "chroma_location"},
-    {"unspecified",                      NULL,  0, AV_OPT_TYPE_CONST, {.i64=AVCHROMA_LOC_UNSPECIFIED},  0, 0, STATIC, .unit = "chroma_location"},
-    {"unknown",                          NULL,  0, AV_OPT_TYPE_CONST, {.i64=AVCHROMA_LOC_UNSPECIFIED},  0, 0, STATIC, .unit = "chroma_location"},
-    {"left",                             NULL,  0, AV_OPT_TYPE_CONST, {.i64=AVCHROMA_LOC_LEFT},         0, 0, STATIC, .unit = "chroma_location"},
-    {"center",                           NULL,  0, AV_OPT_TYPE_CONST, {.i64=AVCHROMA_LOC_CENTER},       0, 0, STATIC, .unit = "chroma_location"},
-    {"topleft",                          NULL,  0, AV_OPT_TYPE_CONST, {.i64=AVCHROMA_LOC_TOPLEFT},      0, 0, STATIC, .unit = "chroma_location"},
-    {"top",                              NULL,  0, AV_OPT_TYPE_CONST, {.i64=AVCHROMA_LOC_TOP},          0, 0, STATIC, .unit = "chroma_location"},
-    {"bottomleft",                       NULL,  0, AV_OPT_TYPE_CONST, {.i64=AVCHROMA_LOC_BOTTOMLEFT},   0, 0, STATIC, .unit = "chroma_location"},
-    {"bottom",                           NULL,  0, AV_OPT_TYPE_CONST, {.i64=AVCHROMA_LOC_BOTTOM},       0, 0, STATIC, .unit = "chroma_location"},
-
     {"rotate", "rotate the input clockwise", OFFSET(rotation), AV_OPT_TYPE_INT, {.i64=PL_ROTATION_0}, PL_ROTATION_0, PL_ROTATION_360, DYNAMIC, .unit = "rotation"},
     {"0",                              NULL,  0, AV_OPT_TYPE_CONST, {.i64=PL_ROTATION_0},   .flags = STATIC, .unit = "rotation"},
     {"90",                             NULL,  0, AV_OPT_TYPE_CONST, {.i64=PL_ROTATION_90},  .flags = STATIC, .unit = "rotation"},
@@ -1715,7 +1702,7 @@ static const AVOption libplacebo_options[] = {
     {"270",                            NULL,  0, AV_OPT_TYPE_CONST, {.i64=PL_ROTATION_270}, .flags = STATIC, .unit = "rotation"},
     {"360",                            NULL,  0, AV_OPT_TYPE_CONST, {.i64=PL_ROTATION_360}, .flags = STATIC, .unit = "rotation"},
 
-    {"alpha_mode", "select alpha mode", OFFSET(alpha_mode), AV_OPT_TYPE_INT, {.i64=-1}, -1, AVALPHA_MODE_NB-1, DYNAMIC, .unit = "alpha_mode"},
+    {"alpha_mode", "select alpha moda", OFFSET(alpha_mode), AV_OPT_TYPE_INT, {.i64=-1}, -1, AVALPHA_MODE_NB-1, DYNAMIC, .unit = "alpha_mode"},
     {"auto", "keep the same alpha mode",  0, AV_OPT_TYPE_CONST, {.i64=-1},                              0, 0, DYNAMIC, .unit = "alpha_mode"},
     {"unspecified",                      NULL, 0, AV_OPT_TYPE_CONST, {.i64=AVALPHA_MODE_UNSPECIFIED},   0, 0, DYNAMIC, .unit = "alpha_mode"},
     {"unknown",                          NULL, 0, AV_OPT_TYPE_CONST, {.i64=AVALPHA_MODE_UNSPECIFIED},   0, 0, DYNAMIC, .unit = "alpha_mode"},
